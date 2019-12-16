@@ -4,7 +4,7 @@ import (
   "encoding/csv"
   "fmt"
   "net/http"
-  "io/ioutil"
+  //"io/ioutil"
   "github.com/gojektech/heimdall/httpclient"
   "time"
   "os"
@@ -13,12 +13,34 @@ import (
 
 )
 func main() {
-	testNumber := 3
-	result:= retrieveURLS(testNumber)
-	for i:=0; i<testNumber; i++ {
-		heimdall("https://"+result[i])
-		native("https://"+result[i])
+	
+	for testNumber := 0; testNumber<=1000; testNumber+=100{
+		result:= retrieveURLS(testNumber)
+		start := time.Now()
+		for i:=0; i<testNumber; i++ {
+			//native("https://"+result[i])
+			heimdall("https://"+result[i])
+		}
+		elapsed := time.Since(start)
+	    fmt.Println("Caching,",testNumber, ",",elapsed.Seconds())
+
+	    start = time.Now()
+	    for i:=0; i<testNumber; i++ {
+	    	native("https://"+result[i])
+		}
+		elapsed = time.Since(start)
+	    fmt.Println("Native,", testNumber, ",",elapsed.Seconds())
+
+	    start = time.Now()
+	    for i:=0; i<testNumber; i++ {
+			heimdall("https://"+result[i])
+		}
+		elapsed = time.Since(start)
+	    fmt.Println("Heimdall,",testNumber, ",",elapsed.Seconds())
 	}
+	
+
+
 	
 
 }
@@ -57,6 +79,7 @@ func native(url string) {
   method := "GET"
 
   client := &http.Client {
+  	Timeout: 1000 * time.Millisecond,
   }
   req, err := http.NewRequest(method, url, nil)
 
@@ -64,21 +87,24 @@ func native(url string) {
     fmt.Println(err)
   }
   res, err := client.Do(req)
-  defer res.Body.Close()
-  body, err := ioutil.ReadAll(res.Body)
+  if res != nil {
+  	defer res.Body.Close()
+  }
+  
+  //body, err := ioutil.ReadAll(res.Body)
 
   //fmt.Println(string(body))
 }
 func heimdall(url string) {
-	timeout := 100000 * time.Millisecond
+	timeout := 1000 * time.Millisecond
 	client := httpclient.NewClient(httpclient.WithHTTPTimeout(timeout))
 
-	res, err := client.Get(url, nil)
+	_, err := client.Get(url, nil)
 	if err != nil{
-		panic(err)
+		//fmt.Println(err)
 	}
 
-	body, err := ioutil.ReadAll(res.Body)
+	//body, err := ioutil.ReadAll(res.Body)
 	//fmt.Println(string(body))
 	
 }
