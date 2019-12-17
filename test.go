@@ -14,7 +14,7 @@ import (
 )
 func main() {
 	
-	for testNumber := 0; testNumber<=1000; testNumber+=100{
+	for testNumber := 0; testNumber<=100; testNumber+=10{
 		result:= retrieveURLS(testNumber)
 		start := time.Now()
 		for i:=0; i<testNumber; i++ {
