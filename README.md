@@ -57,8 +57,9 @@ I set a *1 second* timeout for both Heimdall and the Native client. Some content
 #### 100 Requests
 
 Time taken to complete upto 100 requests:
+resources/1000r.png
 
-![100 requests graph](https://raw.githubusercontent.com/traghav/rainbow-bridge/master/resources/100r.png)
+![100 requests graph](resources/100r.png)
 
 The time taken for the caching the DNS responses are consistently higher than the subsequent requests. This is in line with what was expected.
 
@@ -85,7 +86,7 @@ One plausible explanation for Heimdall being marginally faster than Go's native 
 
 Time taken to complete upto 1000 requests:
 
-![1000 requests graph](https://raw.githubusercontent.com/traghav/rainbow-bridge/master/resources/1000r.png)
+![1000 requests graph](resources/1000r.png)
 
 These results were more palatible. The performance across all 3 runs is near identical. This is explained by the fact that the DNS caching/response caching were not staying in the cache long enough when the number of requests increased. More over the average standard deviation in response time between 200 and 1000 requests was a smidge over 2 seconds. The same metric for response times between 10 and 100 requests was over 5 seconds. 
 
